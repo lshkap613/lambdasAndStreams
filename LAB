@@ -1,0 +1,174 @@
+import java.util.function.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class Student {
+   private String name;
+   private int age;
+   private double gpa;
+
+
+   public Student(String name, int age, double gpa) {
+       this.name = name;
+       this.age = age;
+       this.gpa = gpa;
+   }
+
+
+   // Getters
+   public String getName() {
+       return name;
+   }
+
+
+   public int getAge() {
+       return age;
+   }
+
+
+   public double getGpa() {
+       return gpa;
+   }
+
+
+   // Setters
+   public void setName(String name) {
+       this.name = name;
+   }
+
+
+   public void setAge(int age) {
+       this.age = age;
+   }
+
+
+   public void setGpa(double gpa) {
+       this.gpa = gpa;
+   }
+   
+   public static void main(String[] args) {
+	   /// PREDICATE : 
+	   /*
+	   QUESTION 1: 
+	   Write a Predicate<Student> called isAdult that tests if a student is an adult (age >= 18).
+	   */
+       Predicate<Student> isAdult = student -> student.getAge() >= 18;
+	   
+	   
+	   // CONSUMER  : 
+	   /*
+	   QUESTION 2 : 
+	   Write a Consumer<Student> called printName that prints a student's name.
+	   */
+
+	   Consumer<Student> printName = student -> System.out.print(student.getName());
+	   
+	   
+	   /*
+	   QUESTION 3 : 
+	   Write a Supplier<Student>  called createDefaultStudent that returns a new student with a default name, age, 
+	   and GPA.
+	   */
+
+	   Supplier<Student> createDefaultStudent = () -> new Student("Shprintza", 18, 3.5);
+	   
+	   // FUNCTION   : 
+	   /*
+	   QUESTION 4 : 
+	   Write a Function<Student, String> called getName that returns a student's name.*/
+	   
+	   Function<Student, String> getName = student -> student.getName();
+
+	   // BIFUNCTION   : 
+	   /*
+	   QUESTION 5 : 
+	   Write a BiFunction<Student, Double, Student> called updateGPA that updates a student's GPA and returns the 
+	   student.
+	   */
+
+	   BiFunction<Student, Double, Student> updateGPA = (student, newGPA) -> {
+		   																		student.setGpa(newGPA);
+		   																		return student;
+	   																		};
+
+	   // BIPREDICATE   : 
+	   /*
+	   QUESTION 6 : 
+	   Write a BiPredicate<Student, Double> called hasHighGpa that tests if a student's GPA is above a certain 
+	   threshold.
+	   */
+	   																		
+	   	BiPredicate<Student, Double> hasHighGPA = (student, threshold) -> student.getGpa() > threshold;																		
+
+	   // BICONSUMER   : 
+	   /*
+	   QUESTION 7 :
+	   Write a BiConsumer<Student, String> called updateName that updates a student's name.
+	   */
+	   	
+	   	BiConsumer<Student, String> updateName = (student, newName) -> student.setName(newName);
+
+	   	//Question 8 
+	   	/*
+	   	Create a list of students. Use the stream method to create a stream, then use filter to find all adult 
+	   	students (isAdult), map to get their names, and collect to put the names into a new list.
+	   	*/
+	   	Student[] students = {
+				   new Student("Sara Esther", 18, 3.7),
+				   new Student("Brochia", 17, 3.2),
+				   new Student("Malka", 21, 3.9),
+				   new Student("Devorah", 24, 2.9),
+				   new Student("Chaya", 16, 3.3),
+				   new Student("Naomi", 19, 3.8),
+				   new Student("Michal", 20, 4.0),
+				   new Student("Esther", 23, 3.2),
+				   new Student("Rochel", 21, 3.6)
+		   };
+	   	
+	   	List<String> adults = Arrays.stream(students)
+										.filter(isAdult)
+										.map(Student::getName)
+		                                .collect(Collectors.toList());
+	   	
+	   	System.out.println("Students 18 and over:");
+	   	adults.forEach(student -> System.out.println(student));
+
+	}
+
+// !!!!!! ORIGINAL AND REFACTORED HASH FUNCTIONS. The second one as an error. !!!!! //////
+
+// SOURCE: debugcode.ai
+	private int naiveHashCode(String key) {
+		 int hash = 0;
+		 String keyString = key.toString();
+		 
+		 for (int i = 0; i < keyString.length(); i++) {
+			 hash += keyString.charAt(i);
+		 }
+		 return hash % TABLE_SIZE;
+	}
+
+	Function<String, Integer> naiveHashCode = key -> key.chars().sum() % TABLE_SIZE;
+	
+	// SOURCE: debugcode.ai
+	private int moreComplicatedHashCode(String key) {
+		int hash = 0;
+		String keyString = key.toString();
+		
+		for (int i =0; i < keyString.length(); i++) {
+			hash = (hash << 5) + keyString.charAt(i);
+		}
+		
+		return Math.abs(hash) % TABLE_SIZE;
+	}
+	
+	Function<String, Integer> lambdaHashCode = key -> key.chars()
+		    .reduce(0, (hash, c) -> (hash << 5) - hash + c)
+		    .abs() % TABLE_SIZE;
+}
+
+
+
